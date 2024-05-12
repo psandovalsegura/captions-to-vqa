@@ -7,6 +7,8 @@ Created on Sun May 12 23:33:31 2024
 
 FILE_A = "mscoco_val2014_annotations.json"
 FILE_Q = "MultipleChoice_mscoco_val2014_questions.json"
+MODEL = "/BS/robust-architectures/nobackup/llama3/Meta-Llama-3-8B-Instruct"
+TOKENIZER = "/BS/robust-architectures/nobackup/llama3/Meta-Llama-3-8B-Instruct/tokenizer.model"
 BATCHSIZE = 128
 
 ###################################
@@ -103,11 +105,11 @@ prompts = {qid: prompt.format(q,*question_answers[qid]) for qid, q in question_o
 from llama import Llama
 import os, fire, torch
 # required for Windows
-# torch.distributed.init_process_group(backend="gloo", init_method="tcp://localhost:10001", rank=0, world_size=1)
+torch.distributed.init_process_group(backend="nccl", init_method="tcp://localhost:10001", rank=0, world_size=1)
 
 generator = Llama.build(
-    ckpt_dir = "D:/Models/llama3/Meta-Llama-3-8B-Instruct",
-    tokenizer_path = "D:/Models/llama3/Meta-Llama-3-8B-Instruct/tokenizer.model",
+    ckpt_dir = MODEL,
+    tokenizer_path = TOKENIZER,
     max_seq_len = 512,
     max_batch_size = BATCHSIZE,
 )
