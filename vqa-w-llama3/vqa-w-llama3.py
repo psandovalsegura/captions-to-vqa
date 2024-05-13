@@ -9,7 +9,7 @@ FILE_A = "mscoco_val2014_annotations.json"
 FILE_Q = "MultipleChoice_mscoco_val2014_questions.json"
 MODEL = "/BS/robust-architectures/nobackup/llama3/Meta-Llama-3-8B-Instruct"
 TOKENIZER = "/BS/robust-architectures/nobackup/llama3/Meta-Llama-3-8B-Instruct/tokenizer.model"
-BATCHSIZE = 128
+BATCHSIZE = 64
 
 ###################################
 #                                 #
@@ -17,7 +17,7 @@ BATCHSIZE = 128
 #                                 #
 ###################################
 
-import json, torch, tqdm.notebook as tqdm, numpy as np, matplotlib.pyplot as plt
+import json, torch, tqdm, numpy as np, matplotlib.pyplot as plt
 
 with open(FILE_A, "r") as f:
     labels = json.load(f)
@@ -118,7 +118,7 @@ bs = BATCHSIZE
 
 prompts_all = list(prompts.values())
 results_all = []
-for i in tqdm.tqdm(range(len(prompts)//bs)):
+for i in tqdm.tqdm(range(len(prompts)//bs+1)):
     p = prompts_all[i*bs : (i+1)*bs]
     if len(p) > 0:
         results = generator.text_completion(
